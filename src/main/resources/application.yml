@@ -1,0 +1,5 @@
+app:
+  base-url: ${APP_BASE_URL}
+  telegram:
+    bot-token: ${TELEGRAM_BOT_TOKEN}
+    bot-name: ${TELEGRAM_BOT_NAME}

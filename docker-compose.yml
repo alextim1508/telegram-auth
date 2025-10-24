@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  ngrok:
+    image: ngrok/ngrok:latest
+    command:
+      - "start"
+      - "myapp"
+    volumes:
+      - ./secrets/ngrok.yml:/var/lib/ngrok/ngrok.yml
+    network_mode: host
+  app:
+    container_name: app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      APP_BASE_URL: https://renee-sunspotted-goodly.ngrok-free.dev
+    env_file:
+      - secrets/telegramtoken.env
+    ports:
+      - 8080:8080
