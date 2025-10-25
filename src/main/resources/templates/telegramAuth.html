@@ -10,7 +10,7 @@
         th:attr="data-telegram-login=${botName}, data-size='large', data-onauth='onTelegramAuth(user)'">
 </script>
 <script type="text/javascript">
-    const AUTH_TOKEN_URL = "[[${baseUrl}]]" + '/auth/telegram/token';
+    const AUTH_TOKEN_URL = "[[${baseUrl}]]" + '/login';
 
     function onTelegramAuth(user) {
         fetch(AUTH_TOKEN_URL, {
@@ -20,14 +20,29 @@
                 'Content-Type': 'application/json'
             }
         })
-            .then(response => response.text())
-            .then(body => {
-                alert(body);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred during authentication.');
-            });
+        .then(response => {
+            if (response.ok) {
+                console.log('Authentication successful');
+
+                const redirectUrl = response.headers.get('Location');
+                console.log('redirectUrl' + redirectUrl);
+
+                if (redirectUrl) {
+                    window.location.href = redirectUrl;
+                } else {
+                    window.location.href = '/hello/private';
+                }
+            } else {
+                return response.text().then(text => {
+                    console.error('Authentication failed with status:', response.status, 'Response body:', text);
+                    alert('Authentication failed: ' + response.status + ' - ' + text);
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Network or other error:', error);
+            alert('An error occurred during authentication.');
+        });
     }
 </script>
 </body>

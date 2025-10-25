@@ -9,6 +9,7 @@ services:
     volumes:
       - ./secrets/ngrok.yml:/var/lib/ngrok/ngrok.yml
     network_mode: host
+
   app:
     container_name: app
     build:
@@ -16,7 +17,30 @@ services:
       dockerfile: Dockerfile
     environment:
       APP_BASE_URL: https://renee-sunspotted-goodly.ngrok-free.dev
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://db:5432/telegram_users"
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
     env_file:
-      - secrets/telegramtoken.env
+      - secrets/telegram-token.env
     ports:
       - 8080:8080
+
+  db:
+    image: postgres:15
+    container_name: postgres_db
+    environment:
+      POSTGRES_DB: telegram_users
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d telegram_users"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
