@@ -1,6 +1,6 @@
 FROM openjdk:21-jdk
 
-WORKDIR /bank
+WORKDIR /app
 
 COPY build/libs/*.jar app.jar
 

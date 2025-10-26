@@ -11,13 +11,13 @@
 ### Настройка Ngrok:
 
 1. Зарегистрируйтесь на [сайте ngrok](https://dashboard.ngrok.com/get-started/your-authtoken) и получите свой токен аутентификации (`YOUR_NGROK_AUTH_TOKEN`).
-2. Получите субдомен в разделе [Domains](https://dashboard.ngrok.com/domains) (`YOUR_NGROK_SUBDOMAIN`). Он будет использоваться как `APP_BASE_URL`.
+2. Получите домен в разделе [Domains](https://dashboard.ngrok.com/domains) (`YOUR_NGROK_DOMAIN`).
 
 ### Создание Telegram Bot:
 
 1. Создайте бота через [BotFather](https://t.me/BotFather).
 2. Получите `YOUR_TELEGRAM_BOT_TOKEN` и `YOUR_TELEGRAM_BOT_USERNAME`.
-3. В настройках бота (Bot Settings -> Edit Domain) привяжите ваш домен (`APP_BASE_URL`).
+3. В настройках бота (Bot Settings -> Edit Domain) привяжите ваш домен (`YOUR_NGROK_DOMAIN`).
 
 ![Инструкция по привязке домена](screenshots/1.jpg)
 
@@ -45,23 +45,29 @@ TELEGRAM_BOT_NAME=YOUR_TELEGRAM_BOT_USERNAME
 ```
 
 ### 3. Установите базовый URL приложения в `docker-compose.yml`
-Замените `YOUR_NGROK_SUBDOMAIN` на ваш субдомен ngrok.
+Замените `YOUR_NGROK_DOMAIN` на ваш домен ngrok.
 
 ```yaml
 environment:
-  APP_BASE_URL: https://YOUR_NGROK_SUBDOMAIN.ngrok-free.dev
+  APP_BASE_URL: https://YOUR_NGROK_DOMAIN
 ```
 
 ## 🚀 Запуск приложения
 
-## 1. Склонируйте репозиторий и перейдите в его директорию:
+### 1. Склонируйте репозиторий и перейдите в его директорию:
 
 ```bash
 git clone https://github.com/alextim1508/telegram-auth
 cd telegram-auth
 ```
 
-## 2. Запустите сервисы с помощью Docker Compose (может потребоваться VPN):
+### 2 Соберите JAR-файлы проекта:
+
+```bash
+./gradlew bootJar 
+```
+
+### 3. Запустите сервисы с помощью Docker Compose (может потребоваться VPN):
 
 ```yaml
 docker-compose -f docker-compose.yml up -d --build
@@ -69,13 +75,13 @@ docker-compose -f docker-compose.yml up -d --build
 
 ![docker-compose](screenshots/2.jpg)
 
-## 3. Доступ к приложению:
+### 4. Доступ к приложению:
 
-Замените `YOUR_NGROK_SUBDOMAIN` на ваш субдомен ngrok.
+Замените `YOUR_NGROK_DOMAIN` на ваш домен ngrok.
 
 ---
 
-Публичная страница: `https://YOUR_NGROK_SUBDOMAIN.ngrok-free.dev/hello/public`
+Публичная страница: `https://YOUR_NGROK_DOMAIN/hello/public`
 
 ![](screenshots/3.jpg)
 
@@ -89,13 +95,13 @@ docker-compose -f docker-compose.yml up -d --build
 
 ---
 
-Приватная страница (требует аутентификации): `https://YOUR_NGROK_SUBDOMAIN.ngrok-free.dev/hello/private`
+Приватная страница (требует аутентификации): `https://YOUR_NGROK_DOMAIN/hello/private`
 
-При попытке доступа будет выполнен редирект на форму Login ('/login'), где размещен Telegram Login Widget.
+При попытке доступа будет выполнен редирект на форму Login (`https://YOUR_NGROK_DOMAIN/login`), где размещен Telegram Login Widget.
 
 ![](screenshots/5.jpg)
 
-После нажатия кнопки входа через Telegram появится оповещение в чате с вашим ботом в приложении Telegram. Нажмите "Принять", 
+После нажатия кнопки входа через Telegram появится оповещение в чате Service notification в приложении Telegram. Нажмите "Принять", 
 чтобы подтвердить авторизацию.
 
 ![](screenshots/7.jpg)
